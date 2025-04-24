@@ -1,0 +1,22 @@
+# Node.js dependencies
+node_modules/
+
+# Environment variables
+.env
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Debug files
+.DS_Store
+
+# Miscellaneous
+coverage/
+*.config.js
+
+
+package-lock.json
