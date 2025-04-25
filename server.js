@@ -15,6 +15,11 @@ app.use(express.json());
 // Routes
 app.use('/states', statesRoutes);
 
+// Catch-all route for any undefined endpoints
+app.use((req, res) => {
+    res.status(404).json({ error: '404 Not Found' });
+});
+
 // MongoDB connection function
 const connectDB = async () => {
     try {
