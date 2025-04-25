@@ -1,9 +1,8 @@
 require('dotenv').config();
-
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const statesRoutes = require('./routes/states'); // Make sure this file exists and exports your router
+const statesRoutes = require('./routes/states');
 
 const app = express();
 
@@ -11,81 +10,66 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Homepage route for "/"
+// GET / - Root endpoint returns an HTML document.
 app.get('/', (req, res) => {
-  res.send(`
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <title>Final Project</title>
-        <style>
-          html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-          }
-          body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
-          }
-          h1 {
-            font-size: 5rem;
-            color: #333;
-          }
-        </style>
-      </head>
-      <body>
-        <h1>Final Project</h1>
-      </body>
-    </html>
-  `);
+  res.send(`<!DOCTYPE html>
+<html>
+  <head>
+    <title>Final Project</title>
+    <style>
+      html, body { margin: 0; padding: 0; }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+      }
+      h1 { font-size: 4rem; color: #333; }
+    </style>
+  </head>
+  <body>
+    <h1>Final Project</h1>
+  </body>
+</html>`);
 });
 
-// Mount API routes under "/states"
+// Mount the states router under /states.
 app.use('/states', statesRoutes);
 
-// Catch-all middleware for GET requests that weren't handled above.
-// This avoids using a route string like "*" that causes issues with path-to-regexp.
+// Catch-all GET for unknown endpoints: returns a 404 HTML document.
 app.use((req, res, next) => {
   if (req.method === 'GET') {
-    res.status(404).send(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>404 Not Found</title>
-          <style>
-            html, body {
-              margin: 0;
-              padding: 0;
-              height: 100%;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              font-family: Arial, sans-serif;
-            }
-            h1 {
-              font-size: 5rem;
-              color: #333;
-            }
-          </style>
-        </head>
-        <body>
-          <h1>404 Not Found</h1>
-        </body>
-      </html>
-    `);
+    res.status(404).send(`<!DOCTYPE html>
+<html>
+  <head>
+    <title>404 Not Found</title>
+    <style>
+      html, body {
+        margin: 0; padding: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+      }
+      h1 { font-size: 4rem; color: #333; }
+    </style>
+  </head>
+  <body>
+    <h1>404 Not Found</h1>
+  </body>
+</html>`);
   } else {
     next();
   }
 });
 
-// MongoDB connection function
+// Connect to MongoDB.
 const connectDB = async () => {
   try {
-    // The deprecated options are omitted since MongoDB Node.js Driver 4+ uses the recommended defaults.
     await mongoose.connect(process.env.DATABASE_URI);
     console.log('Connected to MongoDB');
   } catch (error) {
@@ -95,10 +79,6 @@ const connectDB = async () => {
 };
 
 const PORT = process.env.PORT || 3000;
-
-// Connect to MongoDB and start the server
 connectDB().then(() => {
-  app.listen(PORT, () =>
-    console.log(`Server running on port ${PORT}`)
-  );
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 });
