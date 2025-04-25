@@ -12,21 +12,50 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Routes
-app.use('/states', statesRoutes);
+// Add the homepage route for "/"
+app.get('/', (req, res) => {
+    res.send(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Final Project</title>
+          <style>
+            /* Remove margins and ensure full height */
+            html, body {
+              margin: 0;
+              padding: 0;
+              height: 100%;
+            }
+            /* Center the content both vertically and horizontally */
+            body {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              background-color: #f0f0f0; /* Optional: a light background */
+              font-family: Arial, sans-serif;
+            }
+            /* Style the heading */
+            h1 {
+              font-size: 5rem;   /* Adjust size as needed */
+              color: #333;       /* Choose your desired color */
+            }
+          </style>
+        </head>
+        <body>
+          <h1>Final Project</h1>
+        </body>
+      </html>
+    `);
+  });
+  
 
-// Catch-all route for any undefined endpoints
-app.use((req, res) => {
-    res.status(404).json({ error: '404 Not Found' });
-});
+// Routes for the API
+app.use('/states', statesRoutes);
 
 // MongoDB connection function
 const connectDB = async () => {
     try {
-        await mongoose.connect(process.env.DATABASE_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        });
+        await mongoose.connect(process.env.DATABASE_URI); // Deprecated options removed since they're now defaults
         console.log('Connected to MongoDB');
     } catch (error) {
         console.error('Failed to connect to MongoDB:', error);
